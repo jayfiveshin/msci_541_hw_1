@@ -1,0 +1,84 @@
+Imports System.IO.Compression
+Imports System.IO
+Imports System.Collections.Generic
+
+Module Module1
+
+    ' Assumes the key is the second field and the value is the first element.
+    ' This order is "backwards", but it is what is used in the files.txt and labels.txt 
+    ' files.
+    Function GetMapFromFile(ByVal mapFilename As String) As Dictionary(Of String, String)
+        Dim map As Dictionary(Of String, String)
+        map = New Dictionary(Of String, String)
+
+        Dim sr As StreamReader
+        sr = New StreamReader(mapFilename)
+
+        Dim line As String = Nothing
+        While True
+            line = sr.ReadLine()
+            If line Is Nothing Then
+                Exit While
+            End If
+            Dim fields As String() = line.Split(Nothing)
+            If fields.Length <> 2 Then
+                Throw New Exception("must have 2 fields per line")
+            End If
+            map.Add(fields(1), fields(0))
+        End While
+        sr.Close()
+
+        Return map
+    End Function
+
+    ' function to read an email
+    Function ReadCompressedEmail(ByVal emailFile As String, _
+        ByVal filesMap As Dictionary(Of String, String)) As Dictionary(Of Integer, Integer)
+
+        Dim filename As String
+        filename = String.Format("{0}\\{1}.gz", filesMap(emailFile), emailFile)
+
+        Dim instream As FileStream
+        instream = New FileStream(filename, FileMode.Open)
+        Dim gzStream As GZipStream = New GZipStream(instream, CompressionMode.Decompress)
+
+        Dim sr As StreamReader
+        sr = New StreamReader(gzStream)
+
+        Dim map As Dictionary(Of Integer, Integer)
+        map = New Dictionary(Of Integer, Integer)
+
+        Dim line As String
+        While True
+            line = sr.ReadLine()
+            If line Is Nothing Then
+                Exit While
+            End If
+            Dim fields As String() = line.Split(Nothing)
+            If fields.Length <> 2 Then
+                Throw New Exception("must have 2 fields per line")
+            End If
+            Dim tokenID As Integer
+            Dim count As Integer
+            tokenID = Integer.Parse(fields(0))
+            count = Integer.Parse(fields(1))
+            map.Add(tokenID, count)
+        End While
+        Return map
+
+    End Function
+
+    Sub Main()
+        Dim filesMap As Dictionary(Of String, String) = GetMapFromFile("files.txt")
+        Dim labelsMap As Dictionary(Of String, String) = GetMapFromFile("labels.txt")
+
+        Dim anEmail As Dictionary(Of Integer, Integer) = ReadCompressedEmail("inmail.14.ids", filesMap)
+
+        For Each tokenId As Integer In anEmail.Keys
+            Dim count As Integer = anEmail(tokenId)
+            Console.WriteLine("{0} {1}", tokenId, count)
+        Next
+
+    End Sub
+
+End Module
