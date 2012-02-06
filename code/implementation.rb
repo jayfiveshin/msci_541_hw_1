@@ -1,6 +1,6 @@
 load 'code/methods.rb'
 
 article = gzip_read("data/chosen_article.txt.gz")
-words = tokenize(article)
-tf = calculate_tf(words)
+terms = tokenize(article)
+tf = calculate_tf(terms)
 display_tf_table(tf)

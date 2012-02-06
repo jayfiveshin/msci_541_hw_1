@@ -7,8 +7,8 @@ def gzip_read(file_name)
 end
 
 def tokenize(string)
-  word  = ""
-  words = []
+  term  = ""
+  terms = []
   middle_of_tag = false
   string.downcase.split("").each { |char| 
     if char.match(">")
@@ -19,24 +19,24 @@ def tokenize(string)
       middle_of_tag = true
       next
     elsif char.match(/[a-z0-9]/)
-      word += char
-    elsif word.empty?
+      term += char
+    elsif term.empty?
       next
     else
-      words << word
-      word = ""
+      terms << term
+      term = ""
     end
   }
-  words
+  terms
 end
 
-def calculate_tf(words)
+def calculate_tf(terms)
   tf = {}
-  words.each { |word|
-    if tf[word].nil?
-      tf[word] = 1
+  terms.each { |term|
+    if tf[term].nil?
+      tf[term] = 1
     else
-      tf[word] += 1
+      tf[term] += 1
     end
   }
   tf
