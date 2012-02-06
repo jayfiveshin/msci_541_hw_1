@@ -1,3 +1,3 @@
 .DS_STORE
-data/latimes.dat.gz
-code/old_methods.rb
+latimes.dat.gz
+old_methods.rb

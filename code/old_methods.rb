@@ -84,3 +84,5 @@ Zlib::GzipReader.open('latimes.dat.gz') { |document|
     end
   }
 }
+
+#some comments here
