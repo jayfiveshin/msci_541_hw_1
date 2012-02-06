@@ -38,7 +38,7 @@ def display_tf_table(sorted_hash)
   rank = 1
   puts "RANK\tWORD\t\tTF"
   sorted_hash.each { |word, count|
-    if rank > 20
+    if rank > 40
       break
     end
     if word.length > 7
