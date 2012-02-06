@@ -69,14 +69,23 @@ def calculate_df(dictionary, file_name)
         next
       elsif line.match("<doc>")
         doc_count += 1
-        puts doc_count
+        print "\r\e[0K#{doc_count} docs processed..."
         doc << line
         middle_of_doc = true
         next
       end
     }
   }
+  print "\n"
   df
+end
+
+def calculate_tfidf(tf, df)
+  tfidf = {}
+  tf.each { |term, frequency|
+    tfidf[term] = (tf[term].to_f / df[term].to_f).round(3)
+  }
+  tfidf
 end
 
 def build_dictionary(tf_hash)
@@ -91,13 +100,29 @@ def display_table(tf_hash)
   rank = 1
   puts "RANK\tTERM\t\tFREQUENCY"
   sort_by_frequency(tf_hash).each { |term, frequency|
-    # if rank > 20
-    #   break
-    # end
+    if rank > 20
+      break
+    end
     if term.length > 7
       puts "#{rank}\t#{term}\t#{frequency}"
     else
       puts "#{rank}\t#{term}\t\t#{frequency}"
+    end
+    rank += 1
+  }
+end
+
+def display_tfidf_table(tf, tfidf)
+  rank = 1
+  puts "RANK\tTERM\t\tTF\tTFIDF"
+  sort_by_frequency(tfidf).each { |term, frequency|
+    if rank > 20
+      break
+    end
+    if term.length > 7
+      puts "#{rank}\t#{term}\t#{tf[term]}\t#{frequency}"
+    else
+      puts "#{rank}\t#{term}\t\t#{tf[term]}\t#{frequency}"
     end
     rank += 1
   }
