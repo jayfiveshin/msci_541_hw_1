@@ -1,3 +1,4 @@
-load 'methods.rb'
+load 'code/methods.rb'
 
-puts gzip_read("chosen_article.txt.gz")
+article = gzip_read("data/chosen_article.txt.gz")
+tokenize article
